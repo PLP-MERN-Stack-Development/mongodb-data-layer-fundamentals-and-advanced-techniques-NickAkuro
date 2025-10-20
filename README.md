@@ -1,59 +1,114 @@
-# MongoDB Fundamentals - Week 1
+# Week 1 - Books CRUD (MERN assignment)
 
-## Setup Instructions
+This repository contains small Node.js scripts that demonstrate using Mongoose to model a collection of books, seed the database, and run queries/CRUD operations.
 
-Before you begin this assignment, please make sure you have the following installed:
+## What’s included
 
-1. **MongoDB Community Edition** - [Installation Guide](https://www.mongodb.com/docs/manual/administration/install-community/)
-2. **MongoDB Shell (mongosh)** - This is included with MongoDB Community Edition
-3. **Node.js** - [Download here](https://nodejs.org/)
+- `db.js` — MongoDB connection helper (exports `connectDB` and `mongoose`).
+- `Models/Books.js` — Mongoose schema and `Book` model.
+- `Insert_books.js` — Sample book data exported as a CommonJS module.
+- `Seed.js` — Script that connects to MongoDB and inserts the sample books into the collection.
+- `queries.js` — Implements many query examples (find, update, delete, aggregation, indexing) and exports an async `main()` function.
+- `crud.js` — Small runner that requires `queries.js` and invokes `main()` so you can run the queries with `node crud.js`.
 
-### Node.js Package Setup
+## Prerequisites
 
-Once you have Node.js installed, run the following commands in your assignment directory:
+- Node.js (v14+ recommended) installed on your machine.
+- A running MongoDB instance (local or Atlas). You need a connection string.
 
-```bash
-# Initialize a package.json file
-npm init -y
+## Setup
 
-# Install the MongoDB Node.js driver
-npm install mongodb
+1. Clone or copy this repository to your machine.
+2. From the project root, install dependencies:
+
+```powershell
+npm install
 ```
 
-## Assignment Overview
+3. Create a `.env` file in the project root with your MongoDB connection string. Example:
 
-This week focuses on MongoDB fundamentals including:
-- Creating and connecting to MongoDB databases
-- CRUD operations (Create, Read, Update, Delete)
-- MongoDB queries and filters
-- Aggregation pipelines
-- Indexing for performance
+```text
+# .env
+MONGODB_URI=mongodb://localhost:27017/books_db
+```
 
-## Submission
+If you use MongoDB Atlas, put the provided connection URI (replace user/password and DB name accordingly).
 
-Complete all the exercises in this assignment and push your code to GitHub using the provided GitHub Classroom link.
+## Run the scripts
 
-## Getting Started
+- Seed the database with sample books (this script connects and inserts the contents of `Insert_books.js`):
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install MongoDB locally or set up a MongoDB Atlas account
-4. Run the provided `insert_books.js` script to populate your database
-5. Complete the tasks in the assignment document
+```powershell
+node Seed.js
+```
 
-## Files Included
+- Run the queries/CRUD examples (use this runner which calls `queries.main()`):
 
-- `Week1-Assignment.md`: Detailed assignment instructions
-- `insert_books.js`: Script to populate your MongoDB database with sample book data
+```powershell
+node crud.js
+```
 
-## Requirements
+Notes:
+- `queries.js` exports `main()` but does not invoke it directly — `crud.js` calls it. You can also call `main()` programmatically from another file.
+- `Insert_books.js` is a data module (exports an array). Do not run it directly with `node`.
 
-- Node.js (v18 or higher)
-- MongoDB (local installation or Atlas account)
-- MongoDB Shell (mongosh) or MongoDB Compass
+## Files of interest
 
-## Resources
+- `Models/Books.js` — shows the schema fields and types (title, author, published_year, price, in_stock, pages, publisher).
+- `queries.js` — contains examples of:
+  - Simple find queries and projections
+  - Updates (`findOneAndUpdate`)
+  - Deletes (`findOneAndDelete`)
+  - Aggregation pipelines (average price by genre, author with most books, grouping by decade)
+  - Index creation and explain() usage
 
-- [MongoDB Documentation](https://docs.mongodb.com/)
-- [MongoDB University](https://university.mongodb.com/)
-- [MongoDB Node.js Driver](https://mongodb.github.io/node-mongodb-native/) 
+## Troubleshooting
+
+- Error connecting to MongoDB:
+  - Ensure MongoDB is running and your `MONGODB_URI` is correct.
+  - If using localhost, make sure the default port is open (27017) and the DB name in the URI is valid.
+  - For Atlas, ensure your IP is whitelisted or set to allow access from anywhere (for development), and that credentials are correct.
+
+- Mongoose validation errors when seeding:
+  - The `Book` schema requires several fields. If you modified `Insert_books.js`, ensure each book has the required fields: `title`, `author`, `published_year`, `price`, `pages`, `publisher`.
+
+## Optional: Add npm scripts (recommended)
+
+You can add shortcut scripts to your `package.json` under the `scripts` section:
+
+```json
+"scripts": {
+  "start": "node crud.js",
+  "seed": "node Seed.js",
+  "test": "echo \"Error: no test specified\" && exit 1"
+}
+```
+
+Then run them with:
+
+```powershell
+npm run seed
+npm start
+```
+
+## Dependencies
+
+This project uses (see `package.json`):
+
+- `dotenv` — load environment variables from `.env`.
+- `mongoose` — MongoDB ODM.
+- `mongodb` — MongoDB driver (installed as a dependency).
+
+## Quick checklist
+
+- [ ] Install Node dependencies (`npm install`).
+- [ ] Create `.env` with `MONGODB_URI`.
+- [ ] Start MongoDB (or confirm Atlas access).
+- [ ] Run `node Seed.js` to populate test data.
+- [ ] Run `node crud.js` to exercise the queries.
+
+
+
+---
+
+Last updated: 2025-10-20
